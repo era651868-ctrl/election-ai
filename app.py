@@ -111,4 +111,3 @@ elif page == "🤖 AI Assistant":
                 st.info("🎯 **100% COMPLETE!** Your preparation is finished.")
             except Exception as e:
                 st.error(f"Error: {e}")
-    
