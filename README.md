@@ -25,6 +25,5 @@
    cd democracyflow-ai
    # 🗳️ DemocracyFlow AI - Election Readiness Portal
 
-**Live Demo:** [https://election-ai-765144110696.us-central1.run.app](https://election-ai-765144110696.us-central1.run.app)
-
----
+**Live Demo:** [https://election-ai-765144110696.us-central1.run.app/](https://election-ai-765144110696.us-central1.run.app/)
+-------
