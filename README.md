@@ -21,6 +21,6 @@
 
 1. **Clone the repository:**
    ```bash
-   git clone [Your Repository URL]
+   git clone [https://github.com/era651868-ctrl/election-ai.git]
    cd democracyflow-ai
    
