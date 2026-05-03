@@ -60,7 +60,7 @@ def init_ai():
         # Initialize Vertex AI
         vertexai.init(project="election-assistant-495111", location="us-central1")
         # Using Gemini 1.5 Flash for best 'Efficiency' and speed
-        return GenerativeModel("gemini-1.5-flash")
+        return GenerativeModel("gemini-2.5-flash")
     except:
         return None
 
