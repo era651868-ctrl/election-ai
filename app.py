@@ -1,8 +1,14 @@
 import streamlit as st
-import google.generativeai as genai
-import time
+import vertexai
+from vertexai.generative_models import GenerativeModel
+import os
 
-# --- 1. PAGE CONFIGURATION ---
+# --- 1. SECURITY & IDENTITY ---
+# This uses the key.json file you uploaded to identify your app
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "key.json"
+vertexai.init(project="election-assistant-495111", location="us-central1")
+
+# --- 2. PAGE CONFIGURATION ---
 st.set_page_config(
     page_title="DemocracyFlow AI | Election 2026",
     page_icon="🗳️",
@@ -23,7 +29,7 @@ st.markdown("""
 if 'prog' not in st.session_state:
     st.session_state.prog = 65
 
-# --- 2. SIDEBAR NAVIGATION ---
+# --- 3. SIDEBAR NAVIGATION ---
 with st.sidebar:
     st.image("https://img.icons8.com/fluency/96/voting-booth.png", width=80)
     st.title("DemocracyFlow AI")
@@ -33,7 +39,7 @@ with st.sidebar:
     st.write(f"**Voter Preparation:** {st.session_state.prog}%")
     st.progress(st.session_state.prog)
 
-# --- 3. HOME DASHBOARD ---
+# --- 4. HOME DASHBOARD ---
 if page == "🏠 Home Dashboard":
     st.title("🗳️ Election 2026: Readiness Portal")
     st.info("Your guide to participating in the world's largest democratic exercise.")
@@ -49,7 +55,7 @@ if page == "🏠 Home Dashboard":
     else:
         st.success("🎯 Preparation 100% Complete. You are an Elite Voter.")
 
-# --- 4. VOTER EDUCATION ---
+# --- 5. VOTER EDUCATION ---
 elif page == "📖 Voter Education":
     st.title("The Voting Process")
     st.markdown("""
@@ -67,7 +73,7 @@ elif page == "📖 Voter Education":
     </div>
     """, unsafe_allow_html=True)
 
-# --- 5. KNOWLEDGE CHECK ---
+# --- 6. KNOWLEDGE CHECK ---
 elif page == "✅ Knowledge Check":
     st.title("Voter IQ Test")
     q1 = st.radio("What color button do you press on the EVM?", ["Red", "Blue", "Green"])
@@ -80,21 +86,19 @@ elif page == "✅ Knowledge Check":
         else:
             st.warning("Check your answers and try again!")
 
-# --- 6. AI ASSISTANT ---
+# --- 7. AI ASSISTANT ---
 elif page == "🤖 AI Assistant":
     st.title("🤖 Ask DemocracyFlow AI")
-    st.write("Verified Insights via Gemini 1.5 Flash.")
+    st.write("Verified Insights via Gemini 2.5 Flash (Vertex AI).")
     
     user_query = st.text_input("Ask a question about election rules:")
     
     if user_query:
-        # Use your specific API Key here
-        genai.configure(api_key="AIzaSyARrgc3vsuhhQvEnaFqYHDYIfYa56H61MM")
-        model = genai.GenerativeModel('gemini-1.5-flash')
-        
         with st.spinner("Analyzing Election Protocols..."):
             try:
-                # Prompt Engineering to ensure ECI link is always present
+                # Using the latest Gemini 2.5 model name we set earlier
+                model = GenerativeModel("gemini-2.5-flash")
+                
                 prompt = f"Answer briefly: {user_query}. At the end, MUST add: 'For official verification, visit https://eci.gov.in'"
                 response = model.generate_content(prompt)
                 
@@ -104,8 +108,7 @@ elif page == "🤖 AI Assistant":
                 
                 st.divider()
                 st.balloons()
-                st.progress(100)
                 st.info("🎯 **100% COMPLETE!** Your preparation is finished.")
             except Exception as e:
                 st.error(f"Error: {e}")
-  
+    
