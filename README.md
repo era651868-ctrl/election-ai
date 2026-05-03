@@ -1,30 +1,26 @@
-# 🗳️ DemocracyFlow AI: Smart Election Readiness Portal
+# 🗳️ DemocracyFlow AI - Election Readiness Portal
 
-**DemocracyFlow AI** is an interactive, AI-powered web application designed to educate and prepare Indian voters for the upcoming 2026 elections. Built with **Streamlit** and powered by **Google Gemini 1.5 Flash**, it transforms complex election protocols into a gamified, user-friendly experience.
+**DemocracyFlow AI** is a professional-grade web application designed to empower citizens for the 2026 Elections. Built using **Streamlit** and powered by **Google Gemini 2.5 Flash** on **Vertex AI**, this portal provides verified election information, voter education, and an AI-powered assistant.
 
----
+## 🚀 Live Demo
+[Insert Your Cloud Run URL Here]
 
-## 🚀 Key Features
-
-* **🤖 Smart AI Assistant:** Get instant, verified answers to election-related queries. Powered by **Gemini 1.5 Flash** with direct links to the Official Election Commission of India (ECI) portal.
-* **📊 Gamified Progress Tracking:** Users start at 65% readiness and reach **100% "Elite Voter" status** only after completing the AI-guided knowledge module.
-* **📖 Voter Education Hub:** A step-by-step interactive guide on identity verification, EVM usage, and VVPAT protocols.
-* **✅ Knowledge Check:** A quick quiz to verify voter "IQ" and ensure procedural understanding.
-* **✨ Professional UI:** A clean, modern dashboard with custom CSS and real-time metrics.
+## ✨ Key Features
+* **🏠 Home Dashboard:** Real-time metrics on voting eligibility and preparation status.
+* **📖 Voter Education:** Interactive guide on the step-by-step process of casting a vote (Identity Check, EVM Marking, etc.).
+* **✅ Knowledge Check:** A built-in "Voter IQ Test" to verify user understanding of election protocols.
+* **🤖 AI Assistant:** A sophisticated AI chatbot that answers specific voter queries using the Gemini 1.5 Flash model, always linking back to official sources like the Election Commission of India.
 
 ## 🛠️ Tech Stack
-
 * **Frontend:** [Streamlit](https://streamlit.io/) (Python)
-* **AI Engine:** [Google Gemini 1.5 Flash API](https://ai.google.dev/)
+* **AI Engine:** [Google Vertex AI](https://cloud.google.com/vertex-ai) (Gemini 2.5 Flash)
 * **Deployment:** [Google Cloud Run](https://cloud.google.com/run)
-* **Version Control:** GitHub
+* **Identity:** Google Service Accounts (IAM)
 
-## 📥 Local Installation
-
-To run this project locally, follow these steps:
+## ⚙️ Installation & Local Setup
 
 1. **Clone the repository:**
    ```bash
-   git clone [https://github.com/era651868-ctrl/election-ai.git](https://github.com/era651868-ctrl/election-ai.git)
-   cd election-ai
+   git clone [Your Repository URL]
+   cd democracyflow-ai
    
