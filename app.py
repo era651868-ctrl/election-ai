@@ -3,96 +3,54 @@ import vertexai
 from vertexai.generative_models import GenerativeModel
 import os
 
-# --- 1. CONFIGURATION & SECURITY ---
-# Note: In production, use Secret Manager. For this demo, we use the local key.
+# 1. SET CONFIG FIRST
+st.set_page_config(page_title="DemocracyFlow AI", page_icon="🗳️")
+
+# 2. AUTH & VERTEX INIT
 if os.path.exists("key.json"):
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "key.json"
 
-vertexai.init(project="election-assistant-495111", location="us-central1")
+try:
+    vertexai.init(project="election-assistant-495111", location="us-central1")
+    @st.cache_resource
+    def load_ai():
+        return GenerativeModel("gemini-2.5-flash")
+    model = load_ai()
+except:
+    st.warning("AI is initializing...")
 
-# --- 2. PERFORMANCE CACHING (Fixed Efficiency Score) ---
-@st.cache_resource
-def get_model():
-    """Loads and caches the model to optimize performance."""
-    return GenerativeModel("gemini-2.5-flash")
+# 3. SIDEBAR NAVIGATION (Restoring Features)
+st.sidebar.title("🗳️ Menu")
+page = st.sidebar.radio("Go to:", ["🏠 Dashboard", "📖 Voter Guide", "✅ Quiz", "🤖 AI Assistant"])
 
-# --- 3. UI SETUP ---
-st.set_page_config(
-    page_title="DemocracyFlow AI | Election 2026",
-    page_icon="🗳️",
-    layout="wide"
-)
-
-st.markdown("""
-    <style>
-    .main { background-color: #f8f9fa; }
-    .stMetric { background-color: #ffffff; padding: 15px; border-radius: 10px; border: 1px solid #ddd; }
-    .stButton>button { width: 100%; border-radius: 20px; background: linear-gradient(45deg, #003366, #004080); color: white; }
-    .info-card { padding: 20px; background-color: white; border-radius: 10px; border-left: 5px solid #003366; margin-bottom: 10px; }
-    </style>
-    """, unsafe_allow_html=True)
-
-# --- 4. SIDEBAR NAVIGATION ---
-if 'prog' not in st.session_state:
-    st.session_state.prog = 65
-
-with st.sidebar:
-    st.title("🗳️ DemocracyFlow")
-    st.markdown("---")
-    page = st.radio("Navigation", ["🏠 Dashboard", "📖 Voter Guide", "✅ Quiz", "🤖 AI Assistant"])
-    st.markdown("---")
-    st.write(f"**Readiness:** {st.session_state.prog}%")
-    st.progress(st.session_state.prog)
-
-# --- 5. PAGE LOGIC ---
+# 4. PAGE LOGIC
 if page == "🏠 Dashboard":
     st.title("Election 2026 Readiness")
-    st.info("Mobile-optimized portal for the modern voter.")
-    c1, c2, c3 = st.columns(3)
-    c1.metric("Status", "Eligible", "18+")
-    c2.metric("System", "EVM-VVPAT", "Secured")
-    c3.metric("Location", "India", "National")
+    st.metric("Voter Status", "ELIGIBLE", "18+")
+    st.info("Goal: Become a Top Performer in Election Awareness.")
+    st.progress(65)
 
 elif page == "📖 Voter Guide":
-    st.title("Polling Station Protocol")
-    st.markdown("""
-    <div class="info-card">
-    <b>Step 1:</b> Verify ID with Polling Officer 1.<br>
-    <b>Step 2:</b> Get finger marked by Polling Officer 2.<br>
-    <b>Step 3:</b> Record your vote on the EVM (Blue Button).
-    </div>
-    """, unsafe_allow_html=True)
+    st.title("Step-by-Step Guide")
+    st.write("1. Check ID")
+    st.write("2. Ink Finger")
+    st.write("3. Press the Blue Button")
 
 elif page == "✅ Quiz":
-    st.title("Voter Knowledge Check")
-    q1 = st.radio("What color button is used to vote?", ["Red", "Blue", "Yellow"])
-    if st.button("Submit Quiz"):
-        if q1 == "Blue":
-            st.success("Correct! You are ready.")
+    st.title("Knowledge Check")
+    ans = st.radio("Which button records your vote?", ["Red", "Green", "Blue"])
+    if st.button("Check Answer"):
+        if ans == "Blue":
+            st.success("Correct!")
             st.balloons()
         else:
-            st.error("Review the Guide and try again.")
+            st.error("Try again!")
 
 elif page == "🤖 AI Assistant":
-    st.title("🤖 Ask DemocracyFlow AI")
-    st.caption("Powered by Gemini 2.5 Flash on Google Vertex AI")
-    
-    user_input = st.text_input("Ask about election rules or procedures:")
-    
-    if user_input:
-        with st.spinner("Analyzing with AI..."):
-            try:
-                # Using the Cached Model Function
-                model = get_model()
-                
-                # Context-aware prompt
-                prompt = f"As an election assistant, answer: {user_input}. Cite that official info is at https://eci.gov.in"
-                response = model.generate_content(prompt)
-                
-                st.session_state.prog = 100
-                st.markdown(f"### AI Insight:\n{response.text}")
-                st.divider()
-                st.balloons()
-            except Exception as e:
-                st.error(f"System busy. Please ensure credentials are valid.")
-                
+    st.title("🤖 AI Assistant")
+    q = st.text_input("Ask a question:")
+    if q:
+        with st.spinner("Processing..."):
+            res = model.generate_content(q)
+            st.write(res.text)
+            
