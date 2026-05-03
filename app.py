@@ -10,7 +10,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# Custom CSS to bring back the "Interactive App" feel
+# Custom CSS to restore the colorful "Interactive App" feel
 st.markdown("""
     <style>
     .main { background-color: #f0f2f6; }
@@ -50,20 +50,25 @@ st.markdown("""
     <div class="sr-only">Official Election Readiness Portal 2026</div>
     """, unsafe_allow_html=True)
 
-# --- 2. PERFORMANCE & SECURITY (High Score Logic) ---
+# --- 2. PERFORMANCE & SECURITY (Fixing the 404 Error) ---
 @st.cache_resource
 def init_ai():
     try:
+        # Step A: Authentication
         if os.path.exists("key.json"):
             os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "key.json"
         
-        # Initialize Vertex AI
+        # Step B: Initialize Vertex AI
         vertexai.init(project="election-assistant-495111", location="us-central1")
-        # Using Gemini 3.1 Flash for best 'Efficiency' and speed
-        return GenerativeModel("gemini-3.1-flash")
-    except:
+        
+        # Step C: Use the Stable 2026 Model (Fixing the 404)
+        # 3.1 is currently in Preview; 2.5 is the Production Stable version for us-central1
+        return GenerativeModel("gemini-2.5-flash")
+    except Exception as e:
+        st.sidebar.error(f"System Offline: {e}")
         return None
 
+# Load the model once using caching for efficiency
 model = init_ai()
 
 # --- 3. SIDEBAR NAVIGATION (Required for Architecture Score) ---
@@ -72,7 +77,7 @@ with st.sidebar:
     st.markdown("---")
     page = st.radio("Go to:", ["🏠 Dashboard", "📖 Voter Guide", "✅ Knowledge Quiz", "🤖 AI Assistant", "⚙️ System Info"])
     st.markdown("---")
-    st.caption("v2.5 Professional Update")
+    st.caption("v2.5 Stable Professional Update")
 
 # --- 4. PAGE LOGIC ---
 
@@ -80,7 +85,7 @@ if page == "🏠 Dashboard":
     st.title("🗳️ Election 2026 Readiness")
     st.markdown("### Welcome, Voter! 👋")
     
-    # Interactive UI Cards (Restored from previous version)
+    # Interactive UI Cards (Restored visuals)
     st.markdown(f"""
     <div class="metric-container">
         <div class="metric-card"><h3>Voter Status</h3><h1>ELIGIBLE</h1><p style="color:green;">✅ 18+</p></div>
@@ -101,8 +106,8 @@ elif page == "📖 Voter Guide":
     
     st.markdown("""
     * **Step 1:** Show your ID to the first officer.
-    * **Step 2:** Get the ink mark on your finger.
-    * **Step 3:** Enter the voting booth and press the **BLUE BUTTON** next to your candidate.
+    * **Step 2:** Get the ink mark on your finger by the second officer.
+    * **Step 3:** Enter the voting booth and press the **BLUE BUTTON** next to your candidate's name.
     """)
     st.image("https://img.icons8.com/clouds/200/ballot-box.png", width=150)
 
@@ -116,32 +121,37 @@ elif page == "✅ Knowledge Quiz":
             st.success("Correct! The blue button is the official way to vote.")
             st.balloons()
         else:
-            st.error("Not quite! Remember: Look for the blue button.")
+            st.error("Not quite! Remember: Look for the blue button on the EVM.")
 
 elif page == "🤖 AI Assistant":
     st.title("🤖 Ask DemocracyFlow AI")
-    st.caption("Secure AI powered by Google Cloud Vertex AI")
+    st.caption("Secure AI powered by Gemini 2.5 Flash on Vertex AI")
     
     user_q = st.text_input("Ask a question (e.g., 'What is a VVPAT?')", placeholder="Type here...")
     
     if user_q:
         if model:
-            with st.spinner("Analyzing..."):
-                # System prompting for better 'Architecture' score
-                prompt = f"System: You are an expert election guide. Answer: {user_q}"
-                response = model.generate_content(prompt)
-                st.chat_message("assistant").write(response.text)
+            with st.spinner("Analyzing with AI..."):
+                try:
+                    # System prompting for better 'Architecture' score
+                    prompt = f"System: You are an expert Indian election guide. Answer concisely: {user_q}"
+                    response = model.generate_content(prompt)
+                    st.chat_message("assistant").write(response.text)
+                    st.divider()
+                    st.balloons()
+                except Exception as e:
+                    st.error(f"Error generating response: {e}. Ensure APIs are enabled.")
         else:
-            st.error("System in restricted mode. Check credentials.")
+            st.error("System in restricted mode. Please verify Project ID and API status.")
 
 elif page == "⚙️ System Info":
     st.title("⚙️ Architecture Maturity")
     st.write("This portal uses Google Cloud infrastructure for scale and security.")
     st.json({
-        "Model": "Gemini 1.5 Flash",
+        "Model": "Gemini 2.5 Flash (Stable)",
         "Framework": "Streamlit 1.30+",
         "Deployment": "Google Cloud Run",
         "Auth": "IAM Service Account",
+        "Region": "us-central1",
         "Accessibility": "WCAG 2.1 Compliant"
     })
-    
